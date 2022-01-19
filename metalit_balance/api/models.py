@@ -33,12 +33,25 @@ class UserBalance(models.Model):
   balance = models.BigIntegerField(null=False, default=0)
   action = models.CharField(max_length=255, blank=True, default=None)
 
-  @staticmethod
+  @staticmethod   
   def add_balance(uid, amount):
+    """
+    Internal method to add balance based on uid
+    """
     user_balance = UserBalance.objects.get(uid=uid)
     user_balance.balance += amount
     user_balance.save()
 
   @staticmethod
-  def deduct_balance(uid, balance):
-    pass
+  def deduct_balance(uid, amount):
+    """
+    Internal method to deduct balance based on uid
+    """
+    user_balance = UserBalance.objects.get(uid=uid)
+    if(user_balance.balance<amount):
+      #trying to deduct amount that is greater than the balance
+      return False
+    else:
+      user_balance.balance -= amount
+      user_balance.save()
+      return True
