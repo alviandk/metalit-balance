@@ -1,10 +1,10 @@
 from django.urls import path
 
 from django.conf import settings
-from .views import TestingAddBalance, TestingDeductBalance
+from .views import TestingAddBalance, TestingDeductBalance, UserBalanceView, GenerateJWTMockup, TestJWTResponse
 
 urlpatterns = [
-
+  path('user-balance/get', UserBalanceView.as_view()),
 ]
 
 """
@@ -15,4 +15,6 @@ if settings.DEV_MODE:
     # Endpoint to test internal method
     path('add-balance', TestingAddBalance.as_view()),
     path('deduct-balance', TestingDeductBalance.as_view()),
+    path('auth/generate-token/<str:user_id>', GenerateJWTMockup.as_view()),
+    path('auth/test-token', TestJWTResponse.as_view()),
   ]
