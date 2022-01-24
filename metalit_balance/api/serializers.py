@@ -1,6 +1,6 @@
 from dataclasses import field
 from rest_framework import serializers
-from .models import User, UserBalance
+from .models import User, UserBalance, UserTransactionHistory
 
 class UserSerializer(serializers.ModelSerializer):
   class Meta:
@@ -10,4 +10,9 @@ class UserSerializer(serializers.ModelSerializer):
 class UserBalanceSerializer(serializers.ModelSerializer):
   class Meta:
     model = UserBalance
-    fields = ['uid', 'balance', 'action']
+    fields = '__all__'
+
+class UserTransactionHistorySerializer(serializers.ModelSerializer):
+  class Meta:
+    model = UserTransactionHistory
+    fields = '__all__'

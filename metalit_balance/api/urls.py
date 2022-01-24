@@ -1,10 +1,12 @@
 from django.urls import path
 
 from django.conf import settings
-from .views import TestingAddBalance, TestingDeductBalance, UserBalanceView, GenerateJWTMockup, TestJWTResponse
+from .views import TestingAddBalance, TestingDeductBalance, UserBalanceView, GenerateJWTMockup, TestJWTResponse, UserTopUpView, UserTransactionHistoryView
 
 urlpatterns = [
   path('user-balance/get', UserBalanceView.as_view()),
+  path('user-transaction-history/get', UserTransactionHistoryView.as_view()),
+  path('user/topup', UserTopUpView.as_view()),
 ]
 
 """

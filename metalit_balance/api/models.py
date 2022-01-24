@@ -63,7 +63,7 @@ class UserBalance(models.Model):
       user_balance.save()
       return True
 
-class UserHistory(models.Model):
+class UserTransactionHistory(models.Model):
   """
   Model for user_history table in database
   """
