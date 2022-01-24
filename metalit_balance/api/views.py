@@ -49,6 +49,9 @@ class UserBalanceView(ListAPIView):
 class UserBalanceHistoryView(ListAPIView):
   pass
 
+class UserRewardView(APIView):
+  pass
+
 class GenerateJWTMockup(APIView):
   """
   Mockup API to generate JWT token

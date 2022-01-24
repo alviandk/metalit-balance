@@ -30,6 +30,7 @@ class UserBalance(models.Model):
     to_field = "uid",
     db_column = "uid"
   )
+  account_number = models.CharField(max_length=255, default=uuid.uuid4, unique=True)
   balance = models.BigIntegerField(null=False, default=0)
   action = models.CharField(max_length=255, blank=True, default=None)
 
@@ -55,3 +56,24 @@ class UserBalance(models.Model):
       user_balance.balance -= amount
       user_balance.save()
       return True
+
+class UserHistory(models.Model):
+  """
+  Model for user_history table in database
+  """
+  uid = models.ForeignKey(
+    User,
+    on_delete = models.CASCADE,
+    to_field = "uid",
+    db_column = "uid"
+  )
+  account_number = models.ForeignKey(
+    UserBalance,
+    on_delete = models.CASCADE,
+    to_field = "account_number",
+    db_column = "account_number"
+  )
+  transaction_id = models.UUIDField(editable=False, default=uuid.uuid4, unique=True)
+  amount = models.BigIntegerField(null=False)
+  description = models.CharField(max_length=255, blank=True, default="")
+  created_at = models.DateTimeField(auto_now_add=True, null=False)
