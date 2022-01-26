@@ -106,6 +106,8 @@ class UserTopUpView(APIView):
                     description=f"topup {amount}",
                 )
                 instance.save()
+            
+            return Response({"detail": "balance added"})
 
         except KeyError as e:
             return Response({"detail": "incomplete request body"})
@@ -113,7 +115,42 @@ class UserTopUpView(APIView):
         except ValidationError:
             return Response({"detail": "request body wrong"})
 
-        return Response({"detail": "balance added"})
+
+
+class UserWithdrawView(APIView):
+    """
+    API to deduct balance from user
+    """
+
+    def post(self, request):
+        try:
+            uid = request.data["uid"]
+            account_number = request.data["account_number"]
+            amount = request.data["amount"]
+
+            user_instance = User.objects.get(uid=uid)
+            user_balance_instance = UserBalance.objects.get(
+                uid=uid, account_number=account_number
+            )
+
+            with transaction.atomic():
+                UserBalance.deduct_balance(uid, amount)
+
+                instance = UserTransactionHistory(
+                    uid=user_instance,
+                    account_number=user_balance_instance,
+                    amount=amount,
+                    description=f"withdraw {amount}",
+                )
+                instance.save()
+            
+            return Response({"detail": "balance withdrawed"})
+
+        except KeyError:
+            return Response({"detail": "incomplete request body"})
+        
+        except ValidationError:
+            return Response({"detail": "request body wrong"})
 
 
 class UserRewardView(APIView):

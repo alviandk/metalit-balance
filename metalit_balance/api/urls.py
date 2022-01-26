@@ -9,12 +9,14 @@ from .views import (
     TestJWTResponse,
     UserTopUpView,
     UserTransactionHistoryView,
+    UserWithdrawView,
 )
 
 urlpatterns = [
     path("user-balance/get", UserBalanceView.as_view()),
     path("user-transaction-history/get", UserTransactionHistoryView.as_view()),
     path("user/topup", UserTopUpView.as_view()),
+    path("user/withdraw", UserWithdrawView.as_view()),
 ]
 
 """
