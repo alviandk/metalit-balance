@@ -32,12 +32,12 @@ class UserBalance(models.Model):
             )
         ]
 
-    uid = models.ForeignKey(
+    uid = models.OneToOneField(
         User, on_delete=models.CASCADE, to_field="uid", db_column="uid"
     )
     account_number = models.CharField(max_length=255, default=uuid.uuid4, unique=True)
     balance = models.BigIntegerField(null=False, default=0)
-    action = models.CharField(max_length=255, blank=True, default=None)
+    action = models.CharField(max_length=255, blank=True, default=None, null=True)
 
     def __str__(self):
         return f"{self.uid}"

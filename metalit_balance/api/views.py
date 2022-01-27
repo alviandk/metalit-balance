@@ -1,3 +1,4 @@
+from typing import Type
 from django.forms import ValidationError
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.db import transaction
@@ -15,6 +16,7 @@ from .serializers import (
 )
 
 # Create your views here.
+# TODO: refactor code to make it cleaner
 
 
 class TestingAddBalance(APIView):
@@ -106,15 +108,14 @@ class UserTopUpView(APIView):
                     description=f"topup {amount}",
                 )
                 instance.save()
-            
+
             return Response({"detail": "balance added"})
 
         except KeyError as e:
             return Response({"detail": "incomplete request body"})
 
         except ValidationError:
-            return Response({"detail": "request body wrong"})
-
+            return Response({"detail": "request body invalid"})
 
 
 class UserWithdrawView(APIView):
@@ -143,18 +144,99 @@ class UserWithdrawView(APIView):
                     description=f"withdraw {amount}",
                 )
                 instance.save()
-            
+
             return Response({"detail": "balance withdrawed"})
 
         except KeyError:
             return Response({"detail": "incomplete request body"})
-        
+
         except ValidationError:
-            return Response({"detail": "request body wrong"})
+            return Response({"detail": "request body invalid"})
 
 
-class UserRewardView(APIView):
-    pass
+class UserBalanceCreationView(APIView):
+    """
+    API to create record on user balance table
+    """
+
+    def post(self, request):
+        serializer = UserBalanceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserReceiveRewardView(APIView):
+    """
+    API to add balance to user balance table when user receive reward
+    """
+
+    def post(self, request):
+        try:
+            uid = request.data["uid"]
+            account_number = request.data["account_number"]
+            amount = request.data["amount"]
+
+            user_instance = User.objects.get(uid=uid)
+            user_balance_instance = UserBalance.objects.get(
+                uid=uid, account_number=account_number
+            )
+
+            with transaction.atomic():
+                UserBalance.add_balance(uid, amount)
+
+                instance = UserTransactionHistory(
+                    uid=user_instance,
+                    account_number=user_balance_instance,
+                    amount=amount,
+                    description=f"topup {amount}",
+                )
+                instance.save()
+
+            return Response({"detail": "balance added"})
+
+        except KeyError as e:
+            return Response({"detail": "incomplete request body"})
+
+        except ValidationError:
+            return Response({"detail": "request body invalid"})
+
+
+class UserBuyProductView(APIView):
+    """
+    API to deduct balance from user balance table when user buy product with their balance
+    """
+
+    def post(self, request):
+        try:
+            uid = request.data["uid"]
+            account_number = request.data["account_number"]
+            amount = request.data["amount"]
+
+            user_instance = User.objects.get(uid=uid)
+            user_balance_instance = UserBalance.objects.get(
+                uid=uid, account_number=account_number
+            )
+
+            with transaction.atomic():
+                UserBalance.deduct_balance(uid, amount)
+
+                instance = UserTransactionHistory(
+                    uid=user_instance,
+                    account_number=user_balance_instance,
+                    amount=amount,
+                    description=f"buy product for {amount}",
+                )
+                instance.save()
+
+            return Response({"detail": "balance withdrawed"})
+
+        except KeyError:
+            return Response({"detail": "incomplete request body"})
+
+        except ValidationError:
+            return Response({"detail": "request body invalid"})
 
 
 class GenerateJWTMockup(APIView):
