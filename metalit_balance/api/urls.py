@@ -16,7 +16,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("user-balance/get", UserBalanceView.as_view()),
+    path("user-balance/get", UserBalanceView.as_view(), name="get_user_balance"),
     path("user-transaction-history/get", UserTransactionHistoryView.as_view()),
     path("user/topup", UserTopUpView.as_view()),
     path("user/withdraw", UserWithdrawView.as_view()),
@@ -33,6 +33,10 @@ if settings.DEV_MODE:
         # Endpoint to test internal method
         path("add-balance", TestingAddBalance.as_view()),
         path("deduct-balance", TestingDeductBalance.as_view()),
-        path("auth/generate-token/<str:user_id>", GenerateJWTMockup.as_view()),
+        path(
+            "auth/generate-token/<str:user_id>",
+            GenerateJWTMockup.as_view(),
+            name="generate-token",
+        ),
         path("auth/test-token", TestJWTResponse.as_view()),
     ]
