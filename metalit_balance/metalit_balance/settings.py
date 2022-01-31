@@ -140,3 +140,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DEV_MODE = env.bool("DEV_MODE")
 JWT_KEY = env("JWT_KEY")
+SERVER_TOKEN = env("SERVER_TOKEN")
