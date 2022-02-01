@@ -48,7 +48,7 @@ class UserBalance(models.Model):
         Internal method to add balance based on uid
         """
         user_balance = UserBalance.objects.get(uid=uid)
-        user_balance.balance += amount
+        user_balance.balance += int(amount)
         user_balance.save()
 
     @staticmethod
@@ -61,7 +61,7 @@ class UserBalance(models.Model):
             # trying to deduct amount that is greater than the balance
             return False
         else:
-            user_balance.balance -= amount
+            user_balance.balance -= int(amount)
             user_balance.save()
             return True
 

@@ -21,7 +21,11 @@ urlpatterns = [
     path("user/topup", UserTopUpView.as_view()),
     path("user/withdraw", UserWithdrawView.as_view()),
     path("user/buy-product", UserBuyProductView.as_view()),
-    path("user/receive-reward", UserReceiveRewardView.as_view()),
+    path(
+        "user/receive-reward",
+        UserReceiveRewardView.as_view(),
+        name="user_receive_reward",
+    ),
     path("user-balance/create", UserBalanceCreationView.as_view()),
 ]
 
