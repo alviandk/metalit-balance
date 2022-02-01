@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 from .auth import UserAuthentication, TokenHandler
 from .models import UserBalance, User, UserTransactionHistory
+from .permissions import ServerPermission
 from .serializers import (
     UserBalanceSerializer,
     UserSerializer,
@@ -87,6 +88,8 @@ class UserTopUpView(APIView):
     API to add balance to user
     """
 
+    permission_classes = [ServerPermission]
+
     def post(self, request):
         try:
             uid = request.data["uid"]
@@ -122,6 +125,8 @@ class UserWithdrawView(APIView):
     """
     API to deduct balance from user
     """
+
+    permission_classes = [ServerPermission]
 
     def post(self, request):
         try:
@@ -172,6 +177,8 @@ class UserReceiveRewardView(APIView):
     API to add balance to user balance table when user receive reward
     """
 
+    permission_classes = [ServerPermission]
+
     def post(self, request):
         try:
             uid = request.data["uid"]
@@ -207,6 +214,8 @@ class UserBuyProductView(APIView):
     """
     API to deduct balance from user balance table when user buy product with their balance
     """
+
+    permission_classes = [ServerPermission]
 
     def post(self, request):
         try:
