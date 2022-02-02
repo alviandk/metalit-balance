@@ -24,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG")
+DEBUG = env.bool("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = [env("ALLOWED_HOST")]
+ALLOWED_HOSTS = [env("DJANGO_ALLOWED_HOST")]
 
 
 # Application definition
@@ -88,11 +88,11 @@ WSGI_APPLICATION = "metalit_balance.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": env("NAME"),
-        "USER": env("USERNAME"),
-        "PASSWORD": env("PASSWORD"),
-        "HOST": env("HOST"),
-        "PORT": env("PORT"),
+        "NAME": env("DJANGO_DB_NAME"),
+        "USER": env("DJANGO_DB_USERNAME"),
+        "PASSWORD": env("DJANGO_DB_PASSWORD"),
+        "HOST": env("DJANGO_DB_HOST"),
+        "PORT": env("DJANGO_DB_PORT"),
     }
 }
 
@@ -138,6 +138,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-DEV_MODE = env.bool("DEV_MODE")
-JWT_KEY = env("JWT_KEY")
-SERVER_TOKEN = env("SERVER_TOKEN")
+DEV_MODE = env.bool("DJANGO_DEV_MODE")
+JWT_KEY = env("DJANGO_JWT_KEY")
+SERVER_TOKEN = env("DJANGO_SERVER_TOKEN")
