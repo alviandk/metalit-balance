@@ -1,4 +1,6 @@
+from os import stat
 from typing import Type
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ValidationError
 from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.db import transaction
@@ -19,7 +21,7 @@ from .serializers import (
 # Create your views here.
 # TODO: refactor code to make it cleaner
 
-
+# TODO: revamp logic testing internal method
 class TestingAddBalance(APIView):
     def get(self, request):
         UserBalance.add_balance("d79386797abe4641b5ec88f56ab90edf", 50000)
@@ -115,10 +117,20 @@ class UserTopUpView(APIView):
             return Response({"detail": "balance added"})
 
         except KeyError as e:
-            return Response({"detail": "incomplete request body"})
+            return Response(
+                {"detail": "incomplete request body"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         except ValidationError:
-            return Response({"detail": "request body invalid"})
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class UserWithdrawView(APIView):
@@ -153,10 +165,20 @@ class UserWithdrawView(APIView):
             return Response({"detail": "balance withdrawed"})
 
         except KeyError:
-            return Response({"detail": "incomplete request body"})
+            return Response(
+                {"detail": "incomplete request body"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         except ValidationError:
-            return Response({"detail": "request body invalid"})
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class UserBalanceCreationView(APIView):
@@ -203,11 +225,21 @@ class UserReceiveRewardView(APIView):
 
             return Response({"detail": "balance added"})
 
-        except KeyError as e:
-            return Response({"detail": "incomplete request body"})
+        except KeyError:
+            return Response(
+                {"detail": "incomplete request body"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         except ValidationError:
-            return Response({"detail": "request body invalid"})
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class UserBuyProductView(APIView):
@@ -242,10 +274,20 @@ class UserBuyProductView(APIView):
             return Response({"detail": "balance withdrawed"})
 
         except KeyError:
-            return Response({"detail": "incomplete request body"})
+            return Response(
+                {"detail": "incomplete request body"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         except ValidationError:
-            return Response({"detail": "request body invalid"})
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class GenerateJWTMockup(APIView):

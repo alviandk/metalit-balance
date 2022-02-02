@@ -18,9 +18,9 @@ from .views import (
 urlpatterns = [
     path("user-balance/get", UserBalanceView.as_view(), name="get_user_balance"),
     path("user-transaction-history/get", UserTransactionHistoryView.as_view()),
-    path("user/topup", UserTopUpView.as_view()),
-    path("user/withdraw", UserWithdrawView.as_view()),
-    path("user/buy-product", UserBuyProductView.as_view()),
+    path("user/topup", UserTopUpView.as_view(), name="user_topup"),
+    path("user/withdraw", UserWithdrawView.as_view(), name="user_withdraw"),
+    path("user/buy-product", UserBuyProductView.as_view(), name="user_buy_product"),
     path(
         "user/receive-reward",
         UserReceiveRewardView.as_view(),
