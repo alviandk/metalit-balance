@@ -1,6 +1,7 @@
 from statistics import mode
 import uuid
 from django.db import models
+from django.forms import ValidationError
 
 # Create your models here.
 class User(models.Model):
@@ -47,8 +48,11 @@ class UserBalance(models.Model):
         """
         Internal method to add balance based on uid
         """
+        if not amount.isdigit() or int(amount) < 0:
+            raise ValidationError("amount must be int parseable and greater than 0")
+
         user_balance = UserBalance.objects.get(uid=uid)
-        user_balance.balance += amount
+        user_balance.balance += int(amount)
         user_balance.save()
 
     @staticmethod
@@ -56,14 +60,16 @@ class UserBalance(models.Model):
         """
         Internal method to deduct balance based on uid
         """
+        if not amount.isdigit() or int(amount) < 0:
+            raise ValidationError("amount must be int parseable and greater than 0")
+
         user_balance = UserBalance.objects.get(uid=uid)
-        if user_balance.balance < amount:
+        if user_balance.balance < int(amount):
             # trying to deduct amount that is greater than the balance
-            return False
+            raise ValidationError("amount is greater than current balance")
         else:
-            user_balance.balance -= amount
+            user_balance.balance -= int(amount)
             user_balance.save()
-            return True
 
 
 class UserTransactionHistory(models.Model):
