@@ -35,6 +35,7 @@ class UserReceiveRewardTestCase(APITestCase):
             "uid": self.user.uid,
             "account_number": self.user_balance.account_number,
             "amount": 50000,
+            "trx_code": "test-1",
         }
         request = self.client.post(self.url, body, **header)
 
@@ -55,6 +56,7 @@ class UserReceiveRewardTestCase(APITestCase):
             "uid": self.user.uid,
             "account_number": self.user_balance.account_number,
             "amount": 50000,
+            "trx_code": "test-2",
         }
         request = self.client.post(self.url, body, **header)
 
@@ -88,6 +90,7 @@ class UserReceiveRewardTestCase(APITestCase):
             "uid": f"{self.user.uid}a",
             "account_number": self.user_balance.account_number,
             "amount": "123",
+            "trx_code": "test-3",
         }
         request = self.client.post(self.url, body, **header)
 
@@ -98,6 +101,7 @@ class UserReceiveRewardTestCase(APITestCase):
             "uid": self.user.uid,
             "account_number": f"{self.user_balance.account_number}a",
             "amount": "123",
+            "trx_code": "test-4",
         }
         request = self.client.post(self.url, body, **header)
 
@@ -108,6 +112,7 @@ class UserReceiveRewardTestCase(APITestCase):
             "uid": self.user.uid,
             "account_number": self.user_balance.account_number,
             "amount": "123a",
+            "trx_code": "test-5",
         }
         request = self.client.post(self.url, body, **header)
 
@@ -118,6 +123,7 @@ class UserReceiveRewardTestCase(APITestCase):
             "uid": self.user.uid,
             "account_number": self.user_balance.account_number,
             "amount": -50000,
+            "trx_code": "test-6",
         }
         request = self.client.post(self.url, body, **header)
 

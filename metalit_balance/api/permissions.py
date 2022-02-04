@@ -14,7 +14,7 @@ class ServerPermission(BasePermission):
         server_token_header = request.META.get("HTTP_SERVER_TOKEN")
         if not server_token_header:
             # Server-Token header is empty
-            raise exceptions.PermissionDenied("Header is empty")
+            raise exceptions.PermissionDenied("Header is empty/invalid")
 
         prefix = server_token_header.split()[0]
         token_payload = server_token_header.split()[1]
