@@ -114,7 +114,9 @@ class UserTopUpView(APIView):
                 )
                 instance.save()
 
-            return Response({"detail": "balance added"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance added", "trx": serializer.data})
 
         except KeyError as e:
             return Response(
@@ -170,7 +172,9 @@ class UserWithdrawView(APIView):
                 )
                 instance.save()
 
-            return Response({"detail": "balance withdrawed"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance withdrawed", "trx": serializer.data})
 
         except KeyError:
             return Response(
@@ -239,7 +243,9 @@ class UserReceiveRewardView(APIView):
                 )
                 instance.save()
 
-            return Response({"detail": "balance added"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance added", "trx": serializer.data})
 
         except KeyError:
             return Response(
@@ -295,7 +301,9 @@ class UserBuyProductView(APIView):
                 )
                 instance.save()
 
-            return Response({"detail": "balance withdrawed"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance withdrawed", "trx": serializer.data})
 
         except KeyError:
             return Response(
