@@ -1,16 +1,14 @@
-from os import stat
-from typing import Type
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError, transaction
 from django.forms import ValidationError
-from django.shortcuts import render, get_list_or_404, get_object_or_404
-from django.db import transaction
+from django.shortcuts import get_list_or_404
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .auth import UserAuthentication, TokenHandler
-from .models import UserBalance, User, UserTransactionHistory
+from .auth import TokenHandler, UserAuthentication
+from .models import User, UserBalance, UserTransactionHistory
 from .permissions import ServerPermission
 from .serializers import (
     UserBalanceSerializer,
@@ -97,6 +95,7 @@ class UserTopUpView(APIView):
             uid = request.data["uid"]
             account_number = request.data["account_number"]
             amount = request.data["amount"]
+            trx_code = request.data["trx_code"]
 
             user_instance = User.objects.get(uid=uid)
             user_balance_instance = UserBalance.objects.get(
@@ -111,10 +110,13 @@ class UserTopUpView(APIView):
                     account_number=user_balance_instance,
                     amount=amount,
                     description=f"topup {amount}",
+                    trx_code=trx_code,
                 )
                 instance.save()
 
-            return Response({"detail": "balance added"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance added", "trx": serializer.data})
 
         except KeyError as e:
             return Response(
@@ -132,6 +134,12 @@ class UserTopUpView(APIView):
                 {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        except IntegrityError:
+            return Response(
+                {"detail": "trx-code must be unique"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
 
 class UserWithdrawView(APIView):
     """
@@ -145,6 +153,7 @@ class UserWithdrawView(APIView):
             uid = request.data["uid"]
             account_number = request.data["account_number"]
             amount = request.data["amount"]
+            trx_code = request.data["trx_code"]
 
             user_instance = User.objects.get(uid=uid)
             user_balance_instance = UserBalance.objects.get(
@@ -159,10 +168,13 @@ class UserWithdrawView(APIView):
                     account_number=user_balance_instance,
                     amount=amount,
                     description=f"withdraw {amount}",
+                    trx_code=trx_code,
                 )
                 instance.save()
 
-            return Response({"detail": "balance withdrawed"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance withdrawed", "trx": serializer.data})
 
         except KeyError:
             return Response(
@@ -178,6 +190,12 @@ class UserWithdrawView(APIView):
         except ObjectDoesNotExist:
             return Response(
                 {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except IntegrityError:
+            return Response(
+                {"detail": "trx-code must be unique"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 
@@ -206,6 +224,7 @@ class UserReceiveRewardView(APIView):
             uid = request.data["uid"]
             account_number = request.data["account_number"]
             amount = request.data["amount"]
+            trx_code = request.data["trx_code"]
 
             user_instance = User.objects.get(uid=uid)
             user_balance_instance = UserBalance.objects.get(
@@ -220,10 +239,13 @@ class UserReceiveRewardView(APIView):
                     account_number=user_balance_instance,
                     amount=amount,
                     description=f"topup {amount}",
+                    trx_code=trx_code,
                 )
                 instance.save()
 
-            return Response({"detail": "balance added"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance added", "trx": serializer.data})
 
         except KeyError:
             return Response(
@@ -239,6 +261,12 @@ class UserReceiveRewardView(APIView):
         except ObjectDoesNotExist:
             return Response(
                 {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except IntegrityError:
+            return Response(
+                {"detail": "trx-code must be unique"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 
@@ -254,6 +282,7 @@ class UserBuyProductView(APIView):
             uid = request.data["uid"]
             account_number = request.data["account_number"]
             amount = request.data["amount"]
+            trx_code = request.data["trx_code"]
 
             user_instance = User.objects.get(uid=uid)
             user_balance_instance = UserBalance.objects.get(
@@ -268,10 +297,13 @@ class UserBuyProductView(APIView):
                     account_number=user_balance_instance,
                     amount=amount,
                     description=f"buy product for {amount}",
+                    trx_code=trx_code,
                 )
                 instance.save()
 
-            return Response({"detail": "balance withdrawed"})
+            serializer = UserTransactionHistorySerializer(instance)
+
+            return Response({"detail": "balance withdrawed", "trx": serializer.data})
 
         except KeyError:
             return Response(
@@ -287,6 +319,12 @@ class UserBuyProductView(APIView):
         except ObjectDoesNotExist:
             return Response(
                 {"detail": "request body invalid"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except IntegrityError:
+            return Response(
+                {"detail": "trx-code must be unique"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 

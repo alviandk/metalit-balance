@@ -48,7 +48,8 @@ class UserBalance(models.Model):
         """
         Internal method to add balance based on uid
         """
-        if not amount.isdigit() or int(amount) < 0:
+        str_amount = str(amount)
+        if not str_amount.isdigit() or int(amount) < 0:
             raise ValidationError("amount must be int parseable and greater than 0")
 
         user_balance = UserBalance.objects.get(uid=uid)
@@ -60,7 +61,8 @@ class UserBalance(models.Model):
         """
         Internal method to deduct balance based on uid
         """
-        if not amount.isdigit() or int(amount) < 0:
+        str_amount = str(amount)
+        if not str_amount.isdigit() or int(amount) < 0:
             raise ValidationError("amount must be int parseable and greater than 0")
 
         user_balance = UserBalance.objects.get(uid=uid)
@@ -100,4 +102,5 @@ class UserTransactionHistory(models.Model):
     )
     amount = models.BigIntegerField(null=False)
     description = models.CharField(max_length=255, blank=True, default="")
+    trx_code = models.CharField(max_length=255, unique=True, null=False, default="")
     created_at = models.DateTimeField(auto_now_add=True, null=False)
